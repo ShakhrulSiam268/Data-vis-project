@@ -1,0 +1,412 @@
+/* :::::::::::::::::::::: GENERAL :::::::::::::::::::::: */
+div.sticky {
+    position: sticky;
+    left: 0px;
+}
+
+body {
+    font-family: sans-serif;
+}
+
+.box {
+    position: absolute;
+    padding: 5px;
+    box-sizing: content-box;
+    /*box-shadow: 3px 3px 3px #44444452;*/
+    background-image: -webkit-linear-gradient(left, #f6f6f6, #f1f1f1);
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px ;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
+    z-index: 100;
+}
+
+/* :::::::::::::::::::::: image dist. :::::::::::::::::::::: */
+svg.imageDist {
+    position: absolute;
+    left: 0;
+    top: 90px;
+    z-index: -1;
+}
+
+/* ---------- zoom panel ---------*/
+#zoomPanel {
+    float: left;
+    margin-top: 20px;
+    width: 350px;
+    height: 350px;
+    /*position: sticky;*/
+    left: 800px;
+}
+
+#detailPanel {
+    position: absolute;
+    float: left;
+    margin-top: 20px;
+    width: 400px;
+    height: 400px;
+    /*position: sticky;*/
+    left: 1170px;
+}
+
+.redBorder {
+    border: 3px solid #343fdd;
+}
+
+.imgBorder {
+    outline-offset: 1px;
+    outline: 2px solid #343fdd;
+}
+
+/* -----------------Drop down---------------- */
+#leftPanel {
+    margin-left: 10px;
+}
+.ss-main{
+    width: 300px;
+    font-family: sans-serif;
+}
+
+.ss-content .ss-list {
+    max-height: 700px;
+}
+
+.ss-content .ss-list .ss-option {
+    padding: 10px
+}
+
+.ss-main .ss-single-selected {
+    font-weight: bold;
+}
+
+.text-option {
+    margin-bottom: 5px;
+}
+
+/* ------------ Nav Bar ------------  */
+/* Add a black background color to the top navigation */
+.topnav {
+    background-color: #ffffff;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.box-nav {
+    /*position: absolute;*/
+    padding-left: 30px;
+    box-sizing: content-box;
+    box-shadow: 3px 3px 3px #44444452;
+    /*background-image: -webkit-linear-gradient(left, #f6f6f6, #f1f1f1);*/
+    /*border: 1px solid #ccc;*/
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px ;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
+    z-index: 100;
+}
+
+.topnav h4 {
+    display: inline-block;
+    padding-left: 10px;
+    font-weight: bold;
+    /*font-size: 20px;*/
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+    margin: 10px 0 -8px 0;
+    float: right;
+    color: #071126;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    border-radius: 4px
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+    background-color: rgb(40, 118, 212);
+    color: white;
+}
+
+#right-btn{
+    margin-right: 30px !important;
+}
+
+/* --------------- bootstrap button ---------------*/
+/* ----- left panel -------- */
+.panelSelection {
+    margin-top: 5px;
+    margin-left: 5px;
+    display: block;
+}
+
+/* ---------------- Label image -----------------*/
+#mainDiv {
+    display: table;
+}
+
+/*#imageSelection {*/
+/*    padding-top: 20px;*/
+/*}*/
+
+.boxBlock {
+    display: table-cell;
+    padding: 5px;
+    box-shadow: 3px 3px 3px #44444452;
+    /*background-image: -webkit-linear-gradient(left, #f6f6f6, #f1f1f1);*/
+    background-color: white;
+    border: 1px solid #c4c4c4;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px ;
+    box-sizing: content-box;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
+}
+
+.image-selection {
+    cursor: pointer;
+    display: flex;
+    font-size: 14px;
+    padding: 5px 5px 5px 20px;
+    border-bottom: 1px solid rgb(83, 95, 105);
+}
+
+.image-selection:hover{
+    background-color: #e1e1e1;
+    transition: 0.1s;
+}
+
+.switchPage {
+    position: relative;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    font-size: 14px;
+    color: rgb(37, 49, 58);
+    margin-top: 100px;
+    /*padding: 0px 16px;*/
+    height: 30px;
+}
+
+.labelSelection {
+    padding: 0;
+    position: relative;
+    left: 6px;
+    height: 700px;
+    overflow: auto;
+}
+
+.fasIcon {
+    opacity: 0.5;
+    font-size: 20px;
+    position: absolute;
+    cursor:pointer
+}
+
+.fasIcon:hover {
+    opacity: 1;
+    transition: 0.5s;
+}
+
+.imageDisplay {
+    display: table-cell;
+    position: relative;
+    box-sizing: content-box;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
+}
+
+.svgImageDisplay {
+    position: absolute;
+    left: 10px;
+    top: 100px
+}
+
+.selected {
+    background-color: rgb(40, 118, 212);
+    color: white;
+}
+
+.selected:hover {
+    background-color: rgb(40, 118, 212);
+    color: white;
+    transition: 0.3s;
+}
+
+.imageSpecified {
+    display: table-row;
+    position: absolute;
+    left: 12px;
+    background-color: white;
+    /*box-shadow: none;*/
+    border-radius: 0;
+
+}
+.imageCaption {
+    display: block;
+    position: absolute;
+    left: 12px;
+    top: 90px;
+    width: 720px;
+    box-shadow: none;
+    border: 1px solid #dcdcdd;
+}
+
+.imageFrame {
+    display: block;
+    position: absolute;
+    left: 10px
+}
+
+.btnDiv {
+    position: absolute;
+    left: 40%;
+    top: 20px;
+}
+
+.rotateBtn {
+    position: absolute;
+    right: 20px;
+    top: 35%;
+}
+.sectionWrapper {
+    position: relative;
+}
+.sectionTitle {
+    position: absolute;
+    padding: 10px 0;
+    box-sizing: content-box;
+    background-color: #d4d4d4;
+    width: 100%;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.objectLabel {
+    position: absolute;
+    padding: 10px 0 10px 10px;
+    box-sizing: content-box;
+    width: -webkit-fill-available;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
+    /*text-align: center;*/
+    font-size: 14px;
+    border-bottom: 0.5px solid rgb(245, 245, 245);
+    height: 13px;
+    line-height: 13px;
+    background-color: white;
+}
+
+.objectLabel:hover {
+    background-color: #e6e6e6;
+    transition: 0.1s;
+    cursor: pointer;
+}
+
+.labelScore {
+    float: right;
+    color: #b4b4b4;
+    margin-right: 10px;
+}
+.selectedLabel {
+    background-color: rgb(40, 118, 212);
+    color: white;
+}
+
+.selectedLabel:hover {
+    background-color: rgb(40, 118, 212);
+    color: white;
+    transition: 0.3s;
+}
+
+.labelOption{
+    overflow: auto;
+    /*height: 500px*/
+}
+
+/* Table */
+#table-wrapper
+{
+    /*border: 1px solid green;*/
+    width: 317px;
+    height: 390px;
+    overflow: auto;
+    position: absolute;
+    margin-top: 180px;
+    left: 8px;
+}
+#table-wrapper td {
+    font-size: 12px;
+}
+
+#table-wrapper-relabel
+{
+    /*border: 1px solid green;*/
+    width: 315px;
+    height: 800px;
+    overflow: auto;
+    position: absolute;
+    left: 1330px;
+}
+#table-wrapper-relabel td {
+    font-size: 14px;
+}
+
+tr:nth-child(even) {background: #f3f3f3
+}
+tr:nth-child(odd) {background: #FFF}
+
+.th-data{
+    width: 100px;
+    font-size: 14px;
+    /*font-weight: normal;*/
+    /*border: 1px solid black;*/
+}
+
+/*td {*/
+/*    font-size: 12px;*/
+/*}*/
+
+.number{
+    text-align: right
+}
+
+.exportBtn {
+    top: 830px;
+    left: 1330px;
+    position: absolute;
+}
+
+/* ------ curve spec -------- */
+#curveSpec {
+    position: absolute;
+    top: 700px;
+    left: 200px;
+}
+
+.curveLabel {
+    display: block;
+    line-height: 0.1;
+    font-size: 13px;
+}

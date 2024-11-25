@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object Detection Visualization</title>
+    <script src="lib/d3.v4.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <link rel="icon" href="osu.jpg">
+    <script src="lib/slimselect.min.js"></script>
+    <link href="lib/slimselect.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+</head>
+
+<body>
+<div class="topnav box-nav">
+    <h4><a href="index.html">Object Detection Visualization</a></h4>
+    <a id="right-btn" href="label.html" class="active">Misclassification Correction</a>
+    <a  href="objects.html">Detection Distribution</a>
+    <a  href="overview.html">Overview</a>
+
+</div>
+
+
+<!-- Google fonts Second Reference-->  
+<!-- <link href="https://fonts.googleapis.com/css?family=Barlow:100,200,300,400,500&display=swap" rel="stylesheet"> -->
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap.min.css">
+
+<!-- Connecting with D3 library-->
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<!-- Creating the headlines -->
+<!-- <button id="ResultSaver">Download New Result</button> -->
+<!-- <button id="correctDataViewer" onclick="correct_data_only() ">Show Correct Data Only</button> -->
+<!-- <button id="incorrectDataViewer" onclick="incorrect_data_only() ">Show Incorrect Data Only</button> -->
+
+<!-- Create the charting area as a div with a sepecifi id -->  
+<div id="my_dataviz">
+  <div id="my_chart">
+    <div id="yAxis"></div>
+    <div id="beeswarm"></div>
+  </div>
+
+  <!-- <div width="150px">  
+    <button id="ResultSaver">Download New Result</button>
+  </div> -->
+  
+  <div id="my_gallery">
+    <div id="my_displaywindow">
+      <!-- <button id="labelButton" onclick="labelSelectedAsCorrectAndUnselectedAsIncorrect() ">Label Selected as Correct And Unselected as Incorrect</button> -->
+      <canvas id="my_canvas" width="400px" height="320px">
+        <img id="my_img"></img>
+      </canvas>
+    </div> 
+    <div id="my_example_images"></div>
+  </div>
+  
+</div>
+
+<style>
+
+/*Defining text stylings*/ 
+  
+#h1 {
+  font-size: 50px;
+  margin: 0px 0px 2px 0px;
+  font-family: 'Barlow', sans-serif;
+  font-weight: 100;
+  font-variant: small-caps slashed-zero;
+  color: #f206d3;
+  }
+  
+#h2 {
+  font-size: 20px;
+  margin: 0px 0px 0px 0px;
+  font-family: 'Barlow', sans-serif;
+  font-weight: 200;
+  font-variant: small-caps slashed-zero;
+  color: #478adb;
+  }
+  
+#link {
+  font-family: 'Barlow', sans-serif;
+  font-size: 6px;
+  font-variant: small-caps slashed-zero;
+  margin: 8px 10px 2px 4px;
+  color: #778287;
+}
+ 
+a:link, a:visited, a:active {
+  text-decoration: none;
+  color: #778287;
+  border-bottom: 0.6px dotted #D1D5D7;
+}
+  
+body {
+  font-family: 'Barlow', sans-serif;
+  background-color:white;
+}
+          
+/*Defining axis stylings*/
+
+.x-axis text,  .y-axis text {
+   font-family: 'Barlow', sans-serif;
+   font-weight: 300;
+   font-size:15px;
+   fill:black;
+color:black;
+}
+.y-axis path, .y-axis line {
+   fill: none;
+   stroke-width: 1;
+   stroke-opacity:1;
+stroke:black;
+}    
+.x-axis path {
+fill:none;
+}
+  
+/*Defining chart stylings*/
+    
+.legend {
+        font-family: 'Barlow', sans-serif;
+        font-weight: 100;
+        font-size:10px;
+        opacity:0.8;
+        fill: #778287;
+      }
+ 
+.legend {
+        font-family: 'Barlow', sans-serif;
+        font-weight: 100;
+        font-size:14px;
+        opacity:0.8;
+        fill: #778287;
+      }
+
+.legend circle {
+        fill: none;
+        stroke-width: 3;
+        stroke-opacity:1;
+        stroke: #778287;
+      }
+
+div.tooltip { 
+    position: absolute;     
+    text-align: center;     
+}
+
+.d3-context-menu {
+  position: absolute;
+  display: none;
+  background-color: #f2f2f2;
+  border-radius: 4px;
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  min-width: 150px;
+  border: 1px solid #d4d4d4;
+
+  z-index:1200;
+}
+
+#beeswarm{
+  overflow-x: auto;
+}
+
+#my_chart {
+  display: flex;
+}
+
+#my_gallery {
+  display: flex;
+}
+
+#my_dataviz {
+  display: flex;
+  flex-direction: column;
+}
+
+.image-border {
+  fill: transparent;
+  stroke: transparent;
+  shape-rendering: crispEdges;
+}
+
+img {
+  /*display: flex;*/
+  border: 10px solid transparent;
+  max-width:230px;
+  max-height:95px;
+  width: auto;
+  height: auto;
+  /*padding: 10px;*/
+}
+
+
+  
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.0.0/math.js"></script>
+<script src="interface1/force-chart.js"></script>
+<script src="interface1/d3-context-menu.js"></script>
+<script src="interface1/beeswarm_chart2.js"></script>
+<script src="interface1/bottom_gallery.js"></script>
+<script src="interface1/downloader.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/js/bootstrap.min.js"></script>
