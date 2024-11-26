@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bounding Box Annotation Tool</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            cursor: crosshair;
+        }
+        .controls {
+            margin: 10px;
+        }
+        #annotations {
+            margin-top: 10px;
+            max-width: 80%;
+        }
+        .buttons {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bounding Box Annotation Tool</h1>
+    <div class="controls">
+        <input type="file" id="imageLoader" webkitdirectory multiple>
+        <button id="nextImage">Next Image</button>
+        <button id="export">Export Annotations</button>
+    </div>
+    <canvas id="imageCanvas"></canvas>
+    <div id="annotations"></div>
+
+    <script>
+        let canvas = document.getElementById("imageCanvas");
+        let ctx = canvas.getContext("2d");
+        let annotations = [];
+        let imageFiles = [];
+        let currentImageIndex = 0;
+        let folderName = "";
+        let currentBBox = null;
+        let dragging = false;
+
+        document.getElementById("imageLoader").addEventListener("change", handleFolderUpload);
+        document.getElementById("nextImage").addEventListener("click", nextImage);
+        document.getElementById("export").addEventListener("click", exportAnnotations);
+
+        canvas.addEventListener("mousedown", (e) => {
+            const { x, y } = getMousePos(canvas, e);
+            currentBBox = { x1: x, y1: y, x2: x, y2: y };
+            dragging = true;
+        });
+
+        canvas.addEventListener("mousemove", (e) => {
+            if (dragging) {
+                const { x, y } = getMousePos(canvas, e);
+                currentBBox.x2 = x;
+                currentBBox.y2 = y;
+                redrawCanvas();
+                drawBBox(currentBBox, "rgba(0, 255, 0, 0.5)");
+            }
+        });
+
+        canvas.addEventListener("mouseup", (e) => {
+            if (dragging) {
+                if (folderName) {
+                    currentBBox.label = folderName;
+                    annotations.push({ ...currentBBox, image: imageFiles[currentImageIndex].name });
+                }
+                currentBBox = null;
+                dragging = false;
+                redrawCanvas();
+                updateAnnotationsList();
+            }
+        });
+
+        function handleFolderUpload(event) {
+            const files = Array.from(event.target.files);
+            if (files.length > 0) {
+                folderName = files[0].webkitRelativePath.split("/")[0]; // Extract folder name
+                imageFiles = files.filter((file) => file.type.startsWith("image/"));
+                currentImageIndex = 0;
+                loadImage(imageFiles[currentImageIndex]);
+            }
+        }
+
+        function loadImage(file) {
+            const img = new Image();
+            img.onload = () => {
+                const maxWidth = window.innerWidth * 0.8; // 80% of screen width
+                const maxHeight = window.innerHeight * 0.8; // 80% of screen height
+                const scale = Math.min(maxWidth / img.width, maxHeight / img.height);
+
+                canvas.width = img.width * scale;
+                canvas.height = img.height * scale;
+
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                redrawCanvas();
+            };
+            img.src = URL.createObjectURL(file);
+        }
+
+        function nextImage() {
+            if (currentImageIndex < imageFiles.length - 1) {
+                currentImageIndex++;
+                loadImage(imageFiles[currentImageIndex]);
+            } else {
+                alert("No more images in the folder!");
+            }
+        }
+
+        function getMousePos(canvas, evt) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top,
+            };
+        }
+
+        function drawBBox(bbox, color) {
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.rect(
+                Math.min(bbox.x1, bbox.x2),
+                Math.min(bbox.y1, bbox.y2),
+                Math.abs(bbox.x2 - bbox.x1),
+                Math.abs(bbox.y2 - bbox.y1)
+            );
+            ctx.stroke();
+        }
+
+        function redrawCanvas() {
+            if (imageFiles[currentImageIndex]) {
+                const img = new Image();
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    annotations
+                        .filter((a) => a.image === imageFiles[currentImageIndex].name)
+                        .forEach((bbox) => drawBBox(bbox, "rgba(255, 0, 0, 0.5)"));
+                };
+                img.src = URL.createObjectURL(imageFiles[currentImageIndex]);
+            }
+        }
+
+        function updateAnnotationsList() {
+            const annotationDiv = document.getElementById("annotations");
+            annotationDiv.innerHTML = `
+                <h3>Annotations for ${imageFiles[currentImageIndex]?.name}</h3>
+                <ul>
+                    ${annotations
+                        .filter((a) => a.image === imageFiles[currentImageIndex]?.name)
+                        .map(
+                            (a) =>
+                                `<li>Label: ${a.label}, BBox: [${a.x1.toFixed(2)}, ${a.y1.toFixed(
+                                    2
+                                )}, ${a.x2.toFixed(2)}, ${a.y2.toFixed(2)}]</li>`
+                        )
+                        .join("")}
+                </ul>
+            `;
+        }
+
+    function exportAnnotations() {
+    if (annotations.length === 0) {
+        alert("No annotations to export!");
+        return;
+    }
+
+    const output = {};
+    annotations.forEach((a) => {
+        const imageName = a.image.replace(/\.[^/.]+$/, ""); // Remove file extension
+        if (!output[imageName]) output[imageName] = [];
+        const x_center = ((a.x1 + a.x2) / 2) / canvas.width;
+        const y_center = ((a.y1 + a.y2) / 2) / canvas.height;
+        const bbox_width = Math.abs(a.x2 - a.x1) / canvas.width;
+        const bbox_height = Math.abs(a.y2 - a.y1) / canvas.height;
+
+        output[imageName].push(
+            `${imageName} ${a.label} ${x_center.toFixed(6)} ${y_center.toFixed(6)} ${bbox_width.toFixed(6)} ${bbox_height.toFixed(6)}`
+        );
+    });
+
+    const fileContent = Object.keys(output)
+        .map((imageName) => {
+            return output[imageName].join("\n");
+        })
+        .join("\n");
+
+    const blob = new Blob([fileContent], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "annotations.txt";
+    a.click();
+        }
+    </script>
+</body>
+</html>
