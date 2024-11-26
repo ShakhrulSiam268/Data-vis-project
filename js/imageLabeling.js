@@ -230,7 +230,7 @@ function drawLabelSelection() {
     //     if (error) throw error;
     //     prevSelect = {}
 
-    d3.csv("../annotated_csv/" + thisImage + ".csv", function (error, data) {
+    d3.csv("annotated_csv/" + thisImage + ".csv", function (error, data) {
         if (error) throw error;
         prevSelect = {}
 
