@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page 2</title>
+  <!-- Include D3.js -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
+  <script src="js/script.js"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif; /* Modern font */
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    #grid-container {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      /* Two rows */
+      grid-template-columns: 1fr 1fr;
+      /* Two columns */
+      gap: 10px;
+      height: 100%;
+      padding: 10px;
+      /*box-sizing: border-box;*/
+    }
+
+    .box {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Soft shadow on items */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      overflow: hidden;
+      /* Prevent overflow */
+    }
+
+    #analysis1 {
+  grid-row: 1 / 2; /* Occupy the first row */
+  grid-column: 1 / 2; /* Occupy the first column */
+  display: flex; /* Flexbox for internal layout */
+  gap: 10px; /* Space between child items */
+}
+#analysis1-container {
+  display: flex; /* Flexbox for horizontal layout */
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  gap: 0; /* Remove any space between children */
+}
+
+#metrics-container {
+  flex: 3; /* 30% width of analysis1 */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 10px;
+  border-right: 1px solid #ddd; /* Visual separator */
+  box-sizing: border-box; /* Include padding in dimensions */
+}
+
+#pr-curve-container {
+  flex: 7; /* 70% width of analysis1 */
+  padding: 10px;
+  box-sizing: border-box; /* Include padding in dimensions */
+}
+
+
+
+
+#metrics-table {
+  width: 50%; /* Table stretches to container width */
+  border-collapse: collapse; /* Merge table borders */
+  text-align: center;
+}
+
+#metrics-table th, #metrics-table td {
+  border: 1px solid #ddd; /* Table cell borders */
+  padding: 4px;
+}
+
+#metrics-table th {
+  background-color: #f2f2f2; /* Light gray background for headers */
+  position: sticky; /* Keep headers visible when scrolling */
+  top: 0;
+  z-index: 1;
+}
+
+
+
+
+    #scatterplot {
+      grid-row: 1 / 2;
+      grid-column: 2 / 3;
+      padding: 10px;
+
+    }
+
+
+
+    #analysis2 {
+      grid-row: 2 / 3;
+      grid-column: 1 / 3;
+      position: relative;
+    }
+
+    #subanalysis2 {
+      position: relative;
+      bottom: 70px; /* Move down by 50px from the top */
+      left: 10px; /* Move 100px from the left */
+      /* Set relative positioning to make it the reference for absolute children */
+      width: 30%;
+      /* Adjust width to fit your design */
+      height: 120%;
+      /* Full height of the container */
+      /*border: 2px solid black;
+      /* Optional for visibility */
+      display: flex;
+      /* Flexbox for alignment */
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+    }
+
+
+    #gallery-section {
+      width: 70%;
+      /* Adjust to control the width of the gallery section */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      /* Center vertically */
+      justify-content: flex-start;
+      align-items: flex-start;
+      overflow-y: auto;
+      /* Allow scrolling for larger content */
+    }
+
+    #image-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      /* Center vertically */
+      gap: 10px;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    #annotation-box {
+      position: absolute;
+      border: 4px solid red;
+      /* Red border for visibility */
+      pointer-events: none;
+      /* Prevent interaction */
+    }
+
+
+
+    #button-container {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .nav-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .nav-button:hover {
+      background-color: #0056b3;
+    }
+
+    #button-container-gallery {
+      display: flex; /* Use flexbox to align buttons */
+  justify-content: center; /* Horizontally center the buttons */
+  align-items: center; /* Vertically center the buttons */
+  flex-wrap: wrap; /* Allow buttons to wrap to the next line if needed */
+  
+    }
+
+    /* Container for the toggle switch */
+.toggle-switch {
+  position: relative;
+  width: 60px;
+  height: 30px;
+}
+
+/* Hidden checkbox input */
+.toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Toggle background */
+.toggle-label {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: red; /* Default color: Red */
+  border-radius: 30px;
+  transition: background-color 0.3s ease;
+}
+
+/* Circle inside the toggle */
+.toggle-label::before {
+  content: "";
+  position: absolute;
+  height: 24px;
+  width: 24px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Checked state styles */
+.toggle-input:checked + .toggle-label {
+  background-color: green; /* Change to green when checked */
+}
+
+.toggle-input:checked + .toggle-label::before {
+  transform: translateX(30px); /* Move the circle to the right */
+}
+
+
+    #download-csv {
+      position: fixed;
+      /* Fix the button's position on the page */
+      top: 453px;
+      /* Distance from the bottom edge */
+      right: 170px;
+      /* Distance from the right edge */
+      padding: 5px 10px;
+      /* Smaller padding for a compact button */
+      background-color: #007bff;
+      /* Button background color */
+      color: white;
+      /* Text color */
+      border: none;
+      /* Remove border */
+      border-radius: 5px;
+      /* Rounded corners */
+      cursor: pointer;
+      /* Pointer cursor on hover */
+      font-size: 12px;
+      /* Smaller font size */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      /* Subtle shadow for visibility */
+      z-index: 1000;
+      /* Ensure it stays above other content */
+    }
+
+    #download-csv:hover {
+      background-color: #0056b3;
+      /* Darker blue on hover */
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navigation Buttons -->
+  <div id="button-container">
+    <button class="nav-button" onclick="navigateToPage('index.html')">Overview</button>
+    <button class="nav-button" onclick="navigateToPage('Page2.html')">Recognition Distribution</button>
+  </div>
+
+  <div id="grid-container">
+   
+    <div id="scatterplot" class="box">
+      <!-- Scatterplot content rendered by script.js -->
+    </div>
+
+    <div id="analysis1" class="box">
+      <div id="analysis1-container" style="display: flex; height: 100%; width: 100%;">
+        <!-- Left Half: Scrollable Metrics Table -->
+        <div id="metrics-container" style="flex: 1; overflow-y: auto; padding: 10px; border-right: 1px solid #ddd;">
+          <h4>Metrics Across Labels</h4>
+          <table id="metrics-table" style="width: 100%; border-collapse: collapse; text-align: center;">
+            <thead>
+              <tr>
+                <th>Label</th>
+                <th>Confidence Score</th>
+                <th>Precision</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Metrics rows will be dynamically inserted here -->
+            </tbody>
+          </table>
+        </div>
+    
+        <!-- Right Half: Precision-Recall Curve -->
+        <div id="pr-curve-container" style="flex: 1; padding: 10px;">
+          <h4>Metrics Across Persons</h4>
+          <svg id="pr-curve" style="width: 100%; height: 80%;"></svg>
+        </div>
+      </div>
+    </div>
+    
+    
+
+
+
+
+    <div id="analysis2" class="box">
+      <div style="display: flex; width: 100%; height: 100%; flex-direction: column;">
+        <!-- Add the toggle button at the top-right corner -->
+<div style="display: flex; justify-content: flex-end; padding: 5px;">
+  <label for="toggle-button" style="margin-right: 14px; margin-top: 4px;">Toggle:</label>
+  <div class="toggle-switch">
+    <input id="toggle-button" type="checkbox" class="toggle-input" />
+    <label for="toggle-button" class="toggle-label"></label>
+  </div>
+</div>
+
+
+        
+
+        <!-- Slider for controlling the Score -->
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+          <label for="min-slider" style="margin-left: 500px;">Score Range:</label>
+          <input id="min-slider" type="range" min="0" max="1" step="0.01" value="0"
+            style="width: 150px; margin-left: 5px;">
+          <span id="min-slider-value">0.00</span>
+          <span style="margin: 0 10px;">to</span>
+          <input id="max-slider" type="range" min="0" max="1" step="0.01" value="1"
+            style="width: 150px; margin-left: 5px;">
+          <span id="max-slider-value">1.00</span>
+        </div>
+
+        <div style="display: flex; width: 100%; height: 100%;">
+          <!-- Left subsection to display selected image -->
+          <div id="subanalysis2" class="box">
+            <div id="selected-image-section">
+              <img id="selected-image-2" src="" alt="Selected Image"
+                style="display: none; width: 90%; height: 90%; object-fit: contain;">
+              <p id="selected-label-2"></p>
+            </div>
+          </div>
+          <!-- Right subsection for gallery -->
+          <div id="gallery-section" style="flex-grow: 1; padding: 10px;">
+            <div id="button-container-gallery"></div>
+            <div id="image-gallery"></div>
+          </div>
+        </div>
+        <!-- New Download CSV Button -->
+        <button id="download-csv"
+          style="padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Export
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    function navigateToPage(pageUrl) {
+      window.location.href = pageUrl;
+    }
+
+    // Load data and initialize scatterplot and interactive buttons
+    d3.csv("merged_dataset_with_imagepath.csv").then(data => {
+      console.log("Data loaded successfully:", data);
+
+      // Initialize dual slider functionality
+      initializeScoreSliders(data);
+
+
+      // Create label-specific buttons and image gallery
+      createLabelButtons(data);
+
+      populateMetricsTable(); // Update the table with confidence scores and precision
+      plotPrecisionAndConfidenceAcrossPersons(); // Plot precision across persons
+
+
+    });
+  </script>
+
+</body>
+
+</html>

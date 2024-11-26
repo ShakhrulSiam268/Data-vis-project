@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Scatter Plot</title>
+  <!-- D3.js Core Library -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
+<script src="js/script.js"></script>
+  <style>
+    
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 90vh;
+      width: 210vh;
+
+    }
+
+    #button-container {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .nav-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .nav-button:hover {
+      background-color: #0056b3;
+    }
+
+    #scatterplot {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="button-container">
+    <button class="nav-button" onclick="window.location.reload();">Overview</button>
+    <button class="nav-button" onclick="navigateToPage('page2.html')">Recognition Distribution</button>
+  </div>
+  <!-- Scatterplot Section -->
+  <div id="scatterplot"></div>
+
+  <script src="js/script.js"></script>
+  <script>
+    function navigateToPage(pageUrl) {
+      window.location.href = pageUrl;
+    }
+
+    // Load scatterplot on page load
+    window.onload = () => {
+      d3.csv("merged_dataset_with_imagepath.csv").then(data => {
+        d3.select("#scatterplot").html(""); // Clear any existing content
+        createScatterplot(data); // Render scatterplot
+      });
+    };
+  </script>
+</body>
+</html>
